@@ -1,0 +1,153 @@
+# NAVSIM Smart Download Configuration
+# 基于用户已完成下载状态的智能下载配置
+
+repository: "OpenDriveLab/OpenScene"
+base_path: "openscene-v1.1"
+
+# 全局下载设置
+global_settings:
+  max_concurrent: 3          # 最大并发下载数
+  max_retries: 5            # 最大重试次数
+  retry_delay_base: 2       # 重试延迟基数(秒)
+  chunk_size: 8388608       # 8MB chunks
+  timeout: 300              # 5分钟超时
+  verify_size: true         # 验证文件大小
+  keep_temp: true           # 保留临时文件直到验证完成
+
+# 已完成的下载 (跳过这些文件)
+completed_downloads:
+  # Maps - 全部完成
+  maps:
+    - "nuplan-maps-v1.1.zip"
+  
+  # Warmup Two Stage - 全部完成  
+  warmup_two_stage:
+    - "navsim_v2.2_warmup_two_stage.tar.gz"
+  
+  # Mini Dataset - 部分完成
+  mini:
+    - "openscene_metadata_mini.tgz"
+    - "openscene_sensor_mini_camera_1.tgz"
+    - "openscene_sensor_mini_camera_2.tgz"
+    - "openscene_sensor_mini_camera_3.tgz"
+    - "openscene_sensor_mini_camera_4.tgz"
+    - "openscene_sensor_mini_camera_5.tgz"
+    - "openscene_sensor_mini_camera_6.tgz"
+  
+  # TrainVal Dataset - 部分完成
+  trainval:
+    - "openscene_sensor_trainval_camera_0.tgz"
+    - "openscene_sensor_trainval_camera_1.tgz"
+  
+  # Test Dataset - 部分完成
+  test:
+    - "openscene_metadata_test.tgz"
+    - "openscene_sensor_test_camera_0.tgz" 
+    - "openscene_sensor_test_camera_1.tgz"
+    - "openscene_sensor_test_camera_4.tgz"
+  
+  # NavHard Two Stage - 部分完成
+  navhard_two_stage:
+    - "navsim_v2.2_navhard_two_stage_curr_sensors.tar.gz"
+  
+  # Private Test Hard - 部分完成
+  private_test_hard:
+    - "openscene_metadata_private_test_hard.tar.gz"
+    - "openscene_sensor_private_test_hard.tar.gz"
+
+# 待下载任务队列
+download_tasks:
+  # Mini Dataset - 剩余文件
+  mini_remaining:
+    priority: 2
+    files:
+      # Camera files (缺少 0, 7-31)
+      - path: "openscene-v1.1/openscene_sensor_mini_camera/openscene_sensor_mini_camera_0.tgz"
+        size_estimate_mb: 500
+      - path: "openscene-v1.1/openscene_sensor_mini_camera/openscene_sensor_mini_camera_7.tgz"
+        size_estimate_mb: 500
+      - path: "openscene-v1.1/openscene_sensor_mini_camera/openscene_sensor_mini_camera_8.tgz"
+        size_estimate_mb: 500
+      - path: "openscene-v1.1/openscene_sensor_mini_camera/openscene_sensor_mini_camera_9.tgz"
+        size_estimate_mb: 500
+      - path: "openscene-v1.1/openscene_sensor_mini_camera/openscene_sensor_mini_camera_10.tgz"
+        size_estimate_mb: 500
+      - path: "openscene-v1.1/openscene_sensor_mini_camera/openscene_sensor_mini_camera_11.tgz"
+        size_estimate_mb: 500
+      - path: "openscene-v1.1/openscene_sensor_mini_camera/openscene_sensor_mini_camera_12.tgz"
+        size_estimate_mb: 500
+      - path: "openscene-v1.1/openscene_sensor_mini_camera/openscene_sensor_mini_camera_13.tgz"
+        size_estimate_mb: 500
+      - path: "openscene-v1.1/openscene_sensor_mini_camera/openscene_sensor_mini_camera_14.tgz"
+        size_estimate_mb: 500
+      - path: "openscene-v1.1/openscene_sensor_mini_camera/openscene_sensor_mini_camera_15.tgz"
+        size_estimate_mb: 500
+      # ... (继续到31)
+      # LiDAR files (全部缺失 0-31)  
+      - path: "openscene-v1.1/openscene_sensor_mini_lidar/openscene_sensor_mini_lidar_0.tgz"
+        size_estimate_mb: 300
+      - path: "openscene-v1.1/openscene_sensor_mini_lidar/openscene_sensor_mini_lidar_1.tgz"
+        size_estimate_mb: 300
+      # ... (继续到31)
+
+  # TrainVal Dataset - 剩余文件 (高优先级，因为是主要训练数据)
+  trainval_remaining:
+    priority: 1
+    files:
+      # Metadata (失败重下)
+      - path: "openscene-v1.1/openscene_metadata_trainval.tgz"
+        size_estimate_mb: 100
+      # Camera files (缺少 2-199)
+      - path: "openscene-v1.1/openscene_sensor_trainval_camera/openscene_sensor_trainval_camera_2.tgz"
+        size_estimate_mb: 800
+      - path: "openscene-v1.1/openscene_sensor_trainval_camera/openscene_sensor_trainval_camera_3.tgz"
+        size_estimate_mb: 800
+      # ... (继续到199)
+      # LiDAR files (全部缺失 0-199)
+      - path: "openscene-v1.1/openscene_sensor_trainval_lidar/openscene_sensor_trainval_lidar_0.tgz"
+        size_estimate_mb: 500
+      # ... (继续到199)
+
+  # Test Dataset - 剩余文件
+  test_remaining:
+    priority: 2
+    files:
+      # Camera files (失败重下: 2,3 + 缺少: 5-31)
+      - path: "openscene-v1.1/openscene_sensor_test_camera/openscene_sensor_test_camera_2.tgz"
+        size_estimate_mb: 500
+      - path: "openscene-v1.1/openscene_sensor_test_camera/openscene_sensor_test_camera_3.tgz"
+        size_estimate_mb: 500
+      - path: "openscene-v1.1/openscene_sensor_test_camera/openscene_sensor_test_camera_5.tgz"
+        size_estimate_mb: 500
+      # ... (继续到31)
+      # LiDAR files (全部缺失 0-31)
+      - path: "openscene-v1.1/openscene_sensor_test_lidar/openscene_sensor_test_lidar_0.tgz"
+        size_estimate_mb: 300
+      # ... (继续到31)
+
+  # NavHard Two Stage - 剩余文件
+  navhard_remaining:
+    priority: 3
+    repository: "OpenDriveLab/OpenScene"
+    base_path: "navsim-v2"
+    files:
+      - path: "navsim-v2/navsim_v2.2_navhard_two_stage_hist_sensors.tar.gz"
+        size_estimate_mb: 2000
+      - path: "navsim-v2/navsim_v2.2_navhard_two_stage_scene_pickles.tar.gz"
+        size_estimate_mb: 1000
+
+  # Private Test Hard - 剩余文件  
+  private_test_remaining:
+    priority: 4
+    repository: "OpenDriveLab/OpenScene"
+    base_path: "navsim-v2"
+    files:
+      - path: "navsim-v2/navsim_v2.2_private_test_hard_two_stage.tar.gz"
+        size_estimate_mb: 3000
+
+# 后处理配置
+post_processing:
+  auto_extract: true        # 自动解压
+  verify_extraction: true   # 验证解压结果
+  cleanup_archives: false   # 保留压缩包(安全起见)
+  organize_structure: true  # 按install.md整理目录结构 
