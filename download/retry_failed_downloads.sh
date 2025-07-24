@@ -87,7 +87,7 @@ echo "================================================="
 
 # 1. 下载 trainval camera 文件
 log_info "=== 下载 openscene_sensor_trainval_camera 文件 ==="
-TRAINVAL_CAMERA_SPLITS=(98 101)
+TRAINVAL_CAMERA_SPLITS=(101)
 
 for split in "${TRAINVAL_CAMERA_SPLITS[@]}"; do
     local_file="openscene_sensor_trainval_camera_${split}.tgz"
@@ -100,7 +100,7 @@ done
 
 # 2. 下载 trainval lidar 文件
 log_info "=== 下载 openscene_sensor_trainval_lidar 文件 ==="
-TRAINVAL_LIDAR_SPLITS=(4 6 7 8 9 21 36 37 39 40 46 48 50 51 52 54 55 59 60 61 62 63 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98)
+TRAINVAL_LIDAR_SPLITS=(21 74)
 
 for split in "${TRAINVAL_LIDAR_SPLITS[@]}"; do
     local_file="openscene_sensor_trainval_lidar_${split}.tgz"
@@ -124,14 +124,19 @@ for split in "${TEST_CAMERA_SPLITS[@]}"; do
     extract_file "$local_file" "Test Camera Split $split"
 done
 
-# 4. 下载 navsim-v2 warmup 文件
-log_info "=== 下载 navsim-v2 warmup 文件 ==="
-warmup_file="navsim_v2.2_warmup_two_stage.tar.gz"
-obs_path="${OBS_NAVSIM_BASE}/${warmup_file}"
-download_file "$obs_path" "$warmup_file" "NavSim V2 Warmup Two Stage"
+# 3. 下载 test camera 文件
+log_info "=== 下载 openscene_sensor_test_lidar 文件 ==="
+TEST_LIDAR_SPLITS=(30)
 
-# 解压 warmup 文件
-extract_file "$warmup_file" "NavSim V2 Warmup Two Stage"
+for split in "${TEST_LIDAR_SPLITS[@]}"; do
+    local_file="openscene_sensor_test_lidar_${split}.tgz"
+    obs_path="${OBS_OPENSCENE_BASE}/openscene_sensor_test_lidar/${local_file}"
+    download_file "$obs_path" "$local_file" "Test Lidar Split $split"
+    
+    # 解压文件
+    extract_file "$local_file" "Test Lidar Split $split"
+done
+
 
 # 5. 处理解压后的目录结构
 log_info "=== 整理目录结构 ==="
